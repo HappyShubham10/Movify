@@ -6,6 +6,7 @@ import { Spinner } from '@chakra-ui/react'
 import { imagePath } from "../services/api"
 import { CalendarIcon } from '@chakra-ui/icons'
 import { ratingToPercentage, resolveRatingColor } from "../utils/helpers"
+import VideoComp from "../components/VideoComp"
 
 const DetailsPage = () => {
     const param=useParams()
@@ -172,7 +173,18 @@ const DetailsPage = () => {
         mb={"5"}>
             Videos
         </Heading>
-        </Container>                            
+        <VideoComp id={video?.key} />
+        <Flex mt={"5"} mb={"10"} overflowX={"scroll"} gap={"5"}>
+        {videos && videos?.map((item)=>(
+            <Box key={item?.id} minW={"300px"}>
+                <VideoComp id={item?.key} small/>
+                <Text fontSize={"md"} fontWeight={"bold"} mt={2} noOfLines={2}>
+                    {item?.name}{" "}
+                </Text>
+            </Box>
+        ))}
+        </Flex>
+    </Container>                            
     </Box>
   )
 }
