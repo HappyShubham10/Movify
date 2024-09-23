@@ -12,7 +12,7 @@ const styles={
             bg:mode(
                 props.theme.semanticTokens.colors["chakra-body-bg"]._light,
                 "blackAlpha900"
-            ),
+            )(props)
         },
     }),
 };

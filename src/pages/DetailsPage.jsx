@@ -1,31 +1,65 @@
 import { useEffect, useState } from "react"
-import { fetchDetails, imagePathOriginal } from "../services/api"
+import { fetchCredits, fetchDetails, fetchVideos, imagePathOriginal } from "../services/api"
 import { useParams } from "react-router-dom"
-import { Box , Container, Flex, Heading, Image } from "@chakra-ui/react"
+import { Badge, Box , CircularProgress, CircularProgressLabel, Container, Flex, Heading, Image, Text } from "@chakra-ui/react"
 import { Spinner } from '@chakra-ui/react'
 import { imagePath } from "../services/api"
+import { CalendarIcon } from '@chakra-ui/icons'
+import { ratingToPercentage, resolveRatingColor } from "../utils/helpers"
 
 const DetailsPage = () => {
     const param=useParams()
     const {type,id}=param
     const [loading,setLoading]=useState(true)
     const [details,setDetails]=useState({})
+    const [cast,setCast]=useState([])
+    const [video,setVideo]=useState(null)
+    const [videos,setVideos]=useState([])
+
+    // useEffect(()=>{
+    //     fetchDetails(type,id)
+    //     .then((res)=>{
+    //         setDetails(res)
+           
+    //     })
+    //     .catch((err)=>{
+    //         console.log(err)
+    //     })
+    //     .finally(()=>{
+    //         setLoading(false)
+    //     })
+    // },[type,id])
+
+    // console.log(details)
 
     useEffect(()=>{
-        fetchDetails(type,id)
-        .then((res)=>{
-            setDetails(res)
-           
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
-        .finally(()=>{
-            setLoading(false)
-        })
-    },[type,id])
+        const fetchData=async()=>{
+            try {
+                const [detailsData,creditsData,videosData] = await Promise.all([
+                    fetchDetails(type,id),
+                    fetchCredits(type,id),
+                    fetchVideos(type,id)
+                ])
+                setDetails(detailsData)
+                setCast(creditsData?.cast?.slice(0,10))
+                
+                const video=videosData?.results?.find((video)=>video?.type === "Trailer")
+                setVideo(video)
+                const videos=videosData?.results?.filter((video)=>video?.type !== "Trailer")?.slice(0,10)
+                setVideos(videos)
 
-    console.log(details)
+            } catch (error) {
+                console.log(error)
+            }finally{
+                setLoading(false)
+
+            }
+        }
+
+        fetchData()
+    },[type , id ])
+
+        console.log(cast)
 
   if (loading) {
     return(
@@ -36,6 +70,7 @@ const DetailsPage = () => {
   }
 
   const title = details?.title  || details?.name
+  const releaseDate = type === "tv" ? details?.first_air_date : details?.release_date
 
   return (
     <Box>
@@ -57,13 +92,87 @@ const DetailsPage = () => {
                     borderRadius={"sm"}
                     src={`${imagePath}/${details?.poster_path}`} />
                     <Box>
-                        <Heading fontSize={"4xl"}>
-                            {title}
+                        <Heading fontSize={"4xl"} mb={4}>
+                            {title}{" "}
+                            <Text as={"span"} fontSize={"2xl"} fontWeight={"normal"} color={"gray.500"}>
+                                {new Date(releaseDate).getFullYear()}
+                            </Text>
                         </Heading>
+
+                        <Flex alignItems={"center"} gap={"4"} mt={"1"} mb={"5"}>
+                            <Flex alignItems={"center"} >
+                                <CalendarIcon mr={2} color={"gray.400"} />
+                                <Text fontSize={"md"}>
+                                {new Date(releaseDate).toLocaleDateString("en-In")} (US)
+                                </Text>
+                            </Flex>
+                        </Flex>
+                        <Flex alignItems={"center"} gap={"4"}>
+                            <CircularProgress
+                            value={ratingToPercentage(details?.vote_average)}
+                            bg={"gray.800"}
+                            borderRadius={"full"}
+                            p={"0.5"}
+                            size={"60px"}
+                            color={resolveRatingColor(details?.vote_average)}
+                            thickness={"6px"}
+                            >
+                            <CircularProgressLabel fontSize={"lg"}>
+                                {ratingToPercentage(details?.vote_average)}{" "}
+                                <Box as="span" fontSize={"10px"}>%</Box>
+                            </CircularProgressLabel>    
+                            </CircularProgress>
+                            <Text display={{base:"none", md:"initial"}}>
+                                User Score
+                            </Text>
+                        </Flex>
+                        <Text 
+                            color={"gray.400"}
+                            fontSize={"sm"}
+                            fontStyle={"italic"}
+                            my={"5"}>
+                                {details?.tagline}
+                        </Text>
+                        <Heading fontSize={"xl"} mb={"3"}>
+                            Overview
+                        </Heading>
+                        <Text fontSize={"md"} mb={"3"}>
+                            {details?.overview}
+                        </Text>
+                        <Flex mt={"6"} gap={"2"}>
+                            {details?.genres?.map((genre)=>(
+                                <Badge key={genre?.id} p={"2"}>{genre?.name}</Badge>
+                            ))}
+                        </Flex>
                     </Box>
                 </Flex>
             </Container>
         </Box>
+
+        <Container px={8} maxW={"container.xl"} pb="10">
+        <Heading as={"h2"} fontSize={"2xl"} textTransform={"uppercase"} mt={"10"}>
+            Cast
+        </Heading>
+        <Flex mt={"5"} mb={"10"} overflowX={"scroll"} gap={"5"}>
+            {cast?.length === 0 && <Text>No cast found</Text>}
+            {cast && cast?.map((item)=>(
+                <Box key={item?.id} minW={"150px"}>
+                    <Image borderRadius={"md"} src={`${imagePath}/${item?.profile_path}`}/>
+                    <Text fontSize={"xl"} textAlign={"center"} mt={"2"}>{item?.name || item?.original_name}</Text>
+                </Box>
+            ))}
+        
+        </Flex>
+
+        <Heading
+        as="h2"
+        fontSize={"2xl"}
+        textTransform={"uppercase"}
+        mt={"10"}
+        mb={"5"}>
+            Videos
+        </Heading>
+        </Container>                            
     </Box>
   )
 }
