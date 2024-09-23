@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom"
 import { Badge, Box , CircularProgress, CircularProgressLabel, Container, Flex, Heading, Image, Text } from "@chakra-ui/react"
 import { Spinner } from '@chakra-ui/react'
 import { imagePath } from "../services/api"
-import { CalendarIcon } from '@chakra-ui/icons'
-import { ratingToPercentage, resolveRatingColor } from "../utils/helpers"
+import { CalendarIcon, TimeIcon } from '@chakra-ui/icons'
+import { minToHour, ratingToPercentage, resolveRatingColor } from "../utils/helpers"
 import VideoComp from "../components/VideoComp"
 
 const DetailsPage = () => {
@@ -107,6 +107,18 @@ const DetailsPage = () => {
                                 {new Date(releaseDate).toLocaleDateString("en-In")} (US)
                                 </Text>
                             </Flex>
+                            {
+                                type === "movie" && (
+                                    <>
+                                        <Box>
+                                            *
+                                        </Box>
+                                        <Flex alignItems={"center"}>
+                                            <TimeIcon mr={"2"} color={"gray.400"}/>
+                                            <Text fontSize={"md"}>{minToHour(details?.runtime)}</Text>
+                                        </Flex>
+                                    </>
+                            )}
                         </Flex>
                         <Flex alignItems={"center"} gap={"4"}>
                             <CircularProgress

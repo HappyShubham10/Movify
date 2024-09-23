@@ -11,3 +11,10 @@ export const resolveRatingColor=(rating)=>{
         return "red.400"
     }
 }
+
+export const minToHour=(min)=>{
+    const hours = Math.floor(min / 60)
+    const mins = min % 60
+
+    return `${hours}h ${mins}m`
+}
