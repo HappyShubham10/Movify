@@ -154,7 +154,7 @@ const DetailsPage = () => {
                         </Text>
                         <Flex mt={"6"} gap={"2"}>
                             {details?.genres?.map((genre)=>(
-                                <Badge key={genre?.id} p={"2"}>{genre?.name}</Badge>
+                                <Badge key={genre?.id} px={"4"} py={2} bg={"gray.300"}>{genre?.name}</Badge>
                             ))}
                         </Flex>
                     </Box>
@@ -162,7 +162,7 @@ const DetailsPage = () => {
             </Container>
         </Box>
 
-        <Container px={8} maxW={"container.xl"} pb="10">
+        <Container px={10} maxW={"container.xl"} pb="10">
         <Heading as={"h2"} fontSize={"2xl"} textTransform={"uppercase"} mt={"10"}>
             Cast
         </Heading>
@@ -170,7 +170,7 @@ const DetailsPage = () => {
             {cast?.length === 0 && <Text>No cast found</Text>}
             {cast && cast?.map((item)=>(
                 <Box key={item?.id} minW={"150px"}>
-                    <Image borderRadius={"md"} src={`${imagePath}/${item?.profile_path}`}/>
+                    <Image borderRadius={"md"} src={`${imagePath}/${item?.profile_path}`} w={"100%"} height={"250px"} objectFit={"cover"}/>
                     <Text fontSize={"xl"} textAlign={"center"} mt={"2"}>{item?.name || item?.original_name}</Text>
                 </Box>
             ))}
@@ -186,7 +186,7 @@ const DetailsPage = () => {
             Videos
         </Heading>
         <VideoComp id={video?.key} />
-        <Flex mt={"5"} mb={"10"} overflowX={"scroll"} gap={"5"}>
+        <Flex px={10} mt={"5"} mb={"10"} overflowX={"scroll"} gap={"5"}>
         {videos && videos?.map((item)=>(
             <Box key={item?.id} minW={"300px"}>
                 <VideoComp id={item?.key} small/>
