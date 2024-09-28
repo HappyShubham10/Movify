@@ -7,6 +7,7 @@ import { imagePath } from "../services/api"
 import { CalendarIcon, TimeIcon } from '@chakra-ui/icons'
 import { minToHour, ratingToPercentage, resolveRatingColor } from "../utils/helpers"
 import VideoComp from "../components/VideoComp"
+import { unavailable } from "../utils/helpers"
 
 const DetailsPage = () => {
     const param=useParams()
@@ -154,7 +155,7 @@ const DetailsPage = () => {
                         </Text>
                         <Flex mt={"6"} gap={"2"}>
                             {details?.genres?.map((genre)=>(
-                                <Badge key={genre?.id} px={"4"} py={2} bg={"gray.300"}>{genre?.name}</Badge>
+                                <Badge key={genre?.id} px={"4"} py={2} bg={"gray.600"}>{genre?.name}</Badge>
                             ))}
                         </Flex>
                     </Box>
@@ -170,7 +171,9 @@ const DetailsPage = () => {
             {cast?.length === 0 && <Text>No cast found</Text>}
             {cast && cast?.map((item)=>(
                 <Box key={item?.id} minW={"150px"}>
-                    <Image borderRadius={"md"} src={`${imagePath}/${item?.profile_path}`} w={"100%"} height={"250px"} objectFit={"cover"}/>
+                   {item?.profile_path === null ? <Image borderRadius={"md"} height={"250px"} src={unavailable}/>: 
+                   <Image borderRadius={"md"} src={`${imagePath}/${item?.profile_path}`} w={"100%"} height={"250px"} objectFit={"cover"}/>} 
+                   
                     <Text fontSize={"xl"} textAlign={"center"} mt={"2"}>{item?.name || item?.original_name}</Text>
                 </Box>
             ))}

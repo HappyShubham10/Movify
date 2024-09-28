@@ -18,3 +18,6 @@ export const minToHour=(min)=>{
 
     return `${hours}h ${mins}m`
 }
+
+export const unavailable =
+  "https://www.movienewz.com/img/films/poster-holder.jpg";
