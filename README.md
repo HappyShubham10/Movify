@@ -19,6 +19,7 @@
 
 
 ## 🌐 Live Demo
+
 Check out the live demo [here](https://your-live-demo-link.com) 🔗.
 
 
@@ -28,9 +29,11 @@ Check out the live demo [here](https://your-live-demo-link.com) 🔗.
    ```bash
    git clone https://github.com/your-username/your-repo-name.git
 
+
 2. Install dependencies:
     ```bash
     npm install
+
 
 3. Run the app:
     ```bash
